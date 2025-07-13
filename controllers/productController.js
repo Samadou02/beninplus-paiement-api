@@ -30,11 +30,14 @@ const getProductById = async (req, res) => {
 // @access  Admin
 const createProduct = async (req, res) => {
   try {
-    const { name, image, price, description, category, stock, isAvailable } = req.body;
+    const { name, price, description, category, stock, isAvailable } = req.body;
+
+    // Récupérer le chemin de l'image uploadée (multer)
+    const imagePath = req.file ? req.file.path : null;
 
     const product = new Product({
       name,
-      image,
+      image: imagePath,
       price,
       description,
       category,
@@ -45,6 +48,7 @@ const createProduct = async (req, res) => {
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
+    console.error('Erreur création produit :', error.message);
     res.status(400).json({ message: 'Erreur lors de la création du produit' });
   }
 };
@@ -57,10 +61,14 @@ const updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Produit non trouvé' });
 
-    const { name, image, price, description, category, stock, isAvailable } = req.body;
+    const { name, price, description, category, stock, isAvailable } = req.body;
+
+    // Si une nouvelle image est uploadée, mettre à jour le chemin
+    if (req.file) {
+      product.image = req.file.path;
+    }
 
     product.name = name || product.name;
-    product.image = image || product.image;
     product.price = price || product.price;
     product.description = description || product.description;
     product.category = category || product.category;
@@ -70,6 +78,7 @@ const updateProduct = async (req, res) => {
     const updatedProduct = await product.save();
     res.json(updatedProduct);
   } catch (error) {
+    console.error('Erreur mise à jour produit :', error.message);
     res.status(400).json({ message: 'Erreur lors de la mise à jour du produit' });
   }
 };

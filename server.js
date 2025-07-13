@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middlewares/errorMiddleware');
+const path = require('path'); // ✅ Ajouté pour gérer les chemins
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -13,6 +14,9 @@ const app = express();
 
 // Middleware pour parser le JSON dans les requêtes
 app.use(express.json());
+
+// ✅ Middleware pour servir les images du dossier "uploads"
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Import des routes
 const userRoutes = require('./routes/userRoutes');
