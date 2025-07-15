@@ -91,12 +91,14 @@ const deleteProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Produit non trouvé' });
 
-    await product.remove();
+    await Product.deleteOne({ _id: req.params.id });
     res.json({ message: 'Produit supprimé' });
   } catch (error) {
+    console.error('Erreur suppression produit :', error);
     res.status(500).json({ message: 'Erreur lors de la suppression du produit' });
   }
 };
+
 
 module.exports = {
   getAllProducts,

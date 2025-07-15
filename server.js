@@ -23,12 +23,16 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const momoPayments = require('./routes/momoPayments');
 
 // Routes API
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
+
+app.use('/api/payments/momo', momoPayments);
+
 
 // Route de base (optionnel)
 app.get('/', (req, res) => {

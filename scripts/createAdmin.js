@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
 dotenv.config();
@@ -14,12 +13,17 @@ mongoose.connect(process.env.MONGO_URI)
 
 const createAdmin = async () => {
   try {
-    const passwordHash = await bcrypt.hash('admin123', 10);
+    // Vérifier si un admin existe déjà
+    const existingAdmin = await User.findOne({ email: 'admin@beninplus.com' });
+    if (existingAdmin) {
+      console.log('ℹ️ Un administrateur existe déjà.');
+      process.exit();
+    }
 
     const admin = new User({
       name: 'Admin',
       email: 'admin@beninplus.com',
-      password: passwordHash,
+      password: 'admin123', // en clair, sera hashé automatiquement
       role: 'ADMIN',
     });
 
